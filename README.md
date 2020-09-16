@@ -57,4 +57,4 @@ Solution of the task should consist of:
 
     Should be made on the test set
     Conclusions: describe, according to your opinion, what are the key aspects to take into account when solving this problem
-    Predictions should be attached in form of a .csv file, where the first column is the filename and the second is probability of an instance being a match frame 
+    Predictions should be attached in form of a .csv file, where the first column is the filename and the second is probability of an instance being a match frame  
