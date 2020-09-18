@@ -57,6 +57,12 @@ Training was performed using the following hyperparemeters and optimizers:
 	* batch_size: 30
 	* 10 epochs
 
+
+
+![val](docs/val.png)
+
+
+
 # Step 4: Model evaluation
 
 The validation loss and accuracy was computed at each epoch. Due to the balanced nature of the dataset accuracy is a good metric but a confusion matrix always comes in handy in binary classificaiton.
