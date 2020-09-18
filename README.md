@@ -2,6 +2,10 @@
 
 ReSpo.Vision recruitment task - Deep Learning
 
+## [results csv](results/from_scratch.csv)
+
+
+
 # step 1: Data inspection and processing
 
 The dataset consisted of images/frames taken from 25 different matches. The goal of this exercise was to build a model which could differentiate between a **match** frame (pos) and a **non-match** frame (neg).
@@ -23,6 +27,8 @@ An initial data exploration found that most of the frames come from the begginin
 
 
 ![match](docs/match.png)
+
+
 
 To perform the train/val split a combinatorics approach was applied to find the best possible divisions of unique matches into both datasets while ensuring:
 
@@ -61,6 +67,8 @@ Training was performed using the following hyperparemeters and optimizers:
 
 ![val](docs/val.png)
 
+As the plot above shows, the pre-trained model tends to perform better right from the get go due to its weight initalisation beig on Imagenet whereas when training from scratch it takes time to converge to a good validaiton accuracy.
+
 
 
 # Step 4: Model evaluation
@@ -69,7 +77,13 @@ The validation loss and accuracy was computed at each epoch. Due to the balanced
 
 
 
+![val](docs/pre.png)
 
+![val](docs/s.png)
+
+
+
+As we can see from the two confusion matrices above, is that indeed it is the model trained from scratch that performs better on our test set. This performance is what shall be used to evaluate the secret test set.
 
 # Conslusions
 
