@@ -3,7 +3,7 @@
 ReSpo.Vision recruitment task - Deep Learning
 
 ## [results csv](results/from_scratch.csv)
-
+## [main notebook](main.ipynb)
 
 
 # step 1: Data inspection and processing
