@@ -1,60 +1,75 @@
 # respo.vision
 
-
 ReSpo.Vision recruitment task - Deep Learning
 
-Problem Definition
+# step 1: Data inspection and processing
 
-Aim of this task is to create a model, which will differentiate between video frames belonging to the match itself, which should be processed by our system and those, which do not contain valuable information - close-ups, audience and pre-match/post-match views.
+The dataset consisted of images/frames taken from 25 different matches. The goal of this exercise was to build a model which could differentiate between a **match** frame (pos) and a **non-match** frame (neg).
 
-The task is stated as a binary classification problem.
-Data
+The training set from 3 files (tournaments/leagues) consisted of a total of 
 
-Four datasets are given, each from a different set of videos. Each dataset is in a separate folder.
+* 1335 non-match frames
+* 1643 match frames
 
-Three training datasets are given:
+Hence forming a rather balanced dataset. 
 
-    FrameFilter-set1_4k
-    FrameFilter-set2_fifawc2018
-    FrameFilter-set3_fhd
+In order to ensure that the model does not overfit and is able to generelize the following aspects were taken into consideration:
 
-And the test set, on which test prediction should be made: FrameFilter-test_set.
+	1. Frames from the same match should not exist in both the training and validation datasets
+ 	2. Ensure that the splitting does not produce an imbalanced dataset
 
-In each dataset, the sample are split into two classes:
+An initial data exploration found that most of the frames come from the beggining of the match where as in the test set they seem to only come only from the first half of the game.
 
-    pos: positive instances, match frames
-    neg: negative instances, non-match frames
 
-All the available instances can be used.
 
-Filenames have a certain structure:
+![match](docs/match.png)
 
-000001-09eada874fc784a668315070-6-400-9400.jpg
+To perform the train/val split a combinatorics approach was applied to find the best possible divisions of unique matches into both datasets while ensuring:
 
-extraction_index-match_hash-minute-frame_shift-frame_idx, where:
+* a) overall class balance (neg, pos) summing all matches 
 
-    extraction_index: index of the extracted frame in a sequence, just for sorting purposes, some indices can exist multiple times
-    match_hash: hashed match name
-    minute: minute of the match, from which the frame comes
-    frame_shift: during extraction, random frame shift (by number of frames equal to  frame_shift) is applied to increase diversity
-    frame_idx: global frame index from a video
+* b) instance balance as desired by the train val split
 
-Task
+This approach is feasible due to the number of matches being a low 25, as it has n! Complexity
 
-The task is to construct a model, which will be able to differentiate between the two classes of frames with high accuracy.
+In the end we had the following split
 
-Solution of the task should consist of:
+	* train: 15 matches
+	* Val: 8 matches
+	* Test: 2 matches
 
-    Data loading & preprocessing (if necessary)
-    Training/validation split
-    Model training
-    Model evaluation on the validation set
 
-    Model should be evaluated using suitable metrics
-    Short results description should be attached
 
-    Prediction
+# step 2: Model selection
 
-    Should be made on the test set
-    Conclusions: describe, according to your opinion, what are the key aspects to take into account when solving this problem
-    Predictions should be attached in form of a .csv file, where the first column is the filename and the second is probability of an instance being a match frame  
+An initial thought seeing this was an object classification problem was to explore the dataset to see if the current one matches any of the widely used for benchmarking. Of course, one can take the best performing model from https://paperswithcode.com/task/image-classification and apply it however, the number of parameters must be taken into account as well as implementation time (code availability/framework/ease of use on a small model). However, due to the nature of the task, I deciced to use an in built InceptionV3 network which was already implemented in Pytorch. Inception has been trained on ImageNet which may include images and learned convolutional networks which will ease our classification problem. It was the SOTA in 2016 and has a relatively small number of parameters so can also be easily trained from scratch.
+
+# step 3: Training
+
+Prior to training, data augmentation was employed to add noise and variaty to the training set, however, only a few oprations were appropriate such as:
+
+* horizontal flip: in case the user (test set) views mirror images of football videos
+* RandomGrayscale, ColorJitter in case the video stream in the test set has noise and is of different quality. Also, to ensure that model does not simply learn the green color of the playing field.
+
+Training was performed using the following hyperparemeters and optimizers:
+
+	* SGD optimizer with a LR of 0.001
+	* batch_size: 30
+	* 10 epochs
+
+# Step 4: Model evaluation
+
+The validation loss and accuracy was computed at each epoch. Due to the balanced nature of the dataset accuracy is a good metric but a confusion matrix always comes in handy in binary classificaiton.
+
+
+
+
+
+# Conslusions
+
+To conclude, the key aspects of solving this problem consisted of the correct test splitting, model selection, and metric evaluation. First of all, the test splitting as mentioned above ensured the model's ability to generelize and not overfit. The model selection was done on basis of performance on benchmarks, easy of use, and general feasibility of training in terms transfer learning and the number of parameters. This model can serve as a good baseline for building more advanced SOTA models in production.
+
+
+
+
+

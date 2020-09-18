@@ -6,7 +6,7 @@ sns.set_context('talk')
 from tqdm import tqdm
 from models import *
 from dataset import *
-
+import pandas as pd
 class Evaluater(object):
     """
     Class to evaluate netowrk and plots graphs

@@ -10,9 +10,10 @@ from torchvision import datasets, models, transforms
 import matplotlib.pyplot as plt
 import time
 import os
+from tqdm import tqdm
 import copy
 
-def train_model(model, dataloaders, criterion, optimizer, num_epochs=25, is_inception=False):
+def train_model(model, dataloaders, criterion, optimizer, num_epochs=25, is_inception=False, device='cpu'):
     since = time.time()
 
     val_acc_history = []
