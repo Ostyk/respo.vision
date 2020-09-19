@@ -76,9 +76,10 @@ def eval_model_test_set(model, test_path, batch_size, device):
 
     test_batch = np.zeros((batch_size, 3, 299, 299))
     filenames = []
-    labels = []
+    labels_0 = []
+    labels_1 = []
     counter = 0
-    for ind, img_name in tqdm(enumerate(os.listdir(test_path))):    
+    for ind, img_name in tqdm(enumerate(sorted(os.listdir(test_path)))):    
         if img_name.endswith('.jpg'):
             filenames.append(img_name)
             img_path = os.path.join(test_path, img_name)
@@ -100,17 +101,19 @@ def eval_model_test_set(model, test_path, batch_size, device):
                 with torch.no_grad():
                     batch_pred = model(test_batch)
                     _, preds = torch.max(batch_pred, 1)
-                    m = nn.Softmax(dim=0)
+                    m = nn.Softmax(dim=1)
                     softmax_output = m(batch_pred)
-                    probs, preds = torch.max(softmax_output, 1)
+                    #probs, preds = torch.max(softmax_output, 1)
                     #print(ind, preds)
 
                 test_batch = np.zeros((batch_size, 3, 299, 299))
                 counter = 0
 
-                labels.extend(probs.cpu().numpy().tolist())
+                labels_0.extend(softmax_output[:,0].cpu().numpy().tolist())
+                labels_1.extend(softmax_output[:,1].cpu().numpy().tolist())
                 
-    s = pd.DataFrame([],columns = ['filename', 'probability'])
+    s = pd.DataFrame([],columns = ['filename', 'probability_0', 'probability_1'])
     s['filename'] = filenames
-    s['probability'] = labels
+    s['probability_0'] = labels_0
+    s['probability_1'] = labels_1
     return s
